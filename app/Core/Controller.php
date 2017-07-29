@@ -10,6 +10,12 @@ abstract class Controller {
         
     }
     
+    public function get($modelName)
+    {
+        $class = 'Model\\'.$modelName;
+        return new $class;
+    }
+    
     public function render($template, $data = null, $layout = null)
     {
         $view = new View();

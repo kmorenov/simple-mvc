@@ -13,9 +13,12 @@ class MainController extends Controller
 
     public function news()
     {
-        echo '<br>';
-        echo "MainController:news";
-        echo '<br>';
+        $model = $this->get('Article');
+        
+        var_dump($model);
+        var_dump($model->find(1));
+   //     var_dump($model->findAll());
+        return $this->render('Main/index', ['name' => 1111], 'layout');
     }
 
 }

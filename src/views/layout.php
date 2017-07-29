@@ -1,4 +1,10 @@
-
-111111111111111
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8">
+  <title>Тег META, атрибут charset</title>
+ </head>
+ <body> 
 <?php include $content; ?> 
-222222222222
+ </body>
+</html>
