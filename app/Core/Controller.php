@@ -21,6 +21,15 @@ abstract class Controller {
         $view = new View();
         return $view->render($template, $data, $layout);
     }
+    
+    public function redirect($route, array $parameters = [])
+    {
+        global $router;
+        $url =  $router->generate($route, $parameters);
+         
+        header("Location: $url");
+        exit;
+    }
 
     public function json(array $data)
     {

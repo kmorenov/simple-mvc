@@ -8,7 +8,7 @@ abstract class Model
 {
     protected static $conn;
     
-    protected $table;
+    protected static $table;
 
     public function __construct()
     {
@@ -19,34 +19,34 @@ abstract class Model
         }
     }
     
-    public function find($id)
+    public static function find($id)
     {
-		$query = self::$conn->prepare("SELECT * FROM $this->table WHERE id = ?");
+		$query = self::$conn->prepare("SELECT * FROM " . static::$table . " WHERE id = ?");
         $query->execute([$id]);
 		return $query->fetch(PDO::FETCH_ASSOC);
     }
     
-    public function findBy(array $filter, $limit = null, $offset = null)
+    public static function findBy(array $filter, $limit = null, $offset = null)
     {
-        $query = $this->selectQuery($filter, $limit, $offset);
+        $query = self::selectQuery($filter, $limit, $offset);
 		return $query->fetchAll(PDO::FETCH_ASSOC);
     }
     
-    public function findOneBy(array $filter)
+    public static function findOneBy(array $filter)
     {
-        $query = $this->selectQuery($filter, 1);
+        $query = self::selectQuery($filter, 1);
 		return $query->fetch(PDO::FETCH_ASSOC);
     }
     
-    public function findAll()
+    public static function findAll()
     {
-		$query = $this->selectQuery();
+		$query = self::selectQuery();
 		return $query->fetchAll(PDO::FETCH_ASSOC);
     }
     
-    private function selectQuery(array $filter = [], $limit = null, $offset = 0)
+    private static function selectQuery(array $filter = [], $limit = null, $offset = 0)
     {
-        $sql = "SELECT * FROM $this->table";
+        $sql = "SELECT * FROM " . static::$table;
         
         $sql .= empty($filter) ? '' : ' WHERE';
         
