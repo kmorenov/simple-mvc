@@ -10,18 +10,20 @@ abstract class Model
     
     protected static $table;
 
-    public function __construct()
-    {
-        if (!self::$conn) {
-            $dns = sprintf("mysql:host=%s;dbname=%s;charset=%s", DB_HOSTNAME, DB_DATABASE, DB_CHARSET);
-            self::$conn = new PDO($dns, DB_USERNAME, DB_PASSWORD);
-            //self::$conn->exec("SET NAMES utf8");
+    public static function getConnect() {
+        if (self::$conn) {
+            return self::$conn;
         }
+        
+        $dns = sprintf("mysql:host=%s;dbname=%s;charset=%s", DB_HOSTNAME, DB_DATABASE, DB_CHARSET);
+        self::$conn = new PDO($dns, DB_USERNAME, DB_PASSWORD);
+        //self::$conn->exec("SET NAMES utf8");
+        return self::$conn;   
     }
     
     public static function find($id)
     {
-		$query = self::$conn->prepare("SELECT * FROM " . static::$table . " WHERE id = ?");
+		$query = self::getConnect()->prepare("SELECT * FROM " . static::$table . " WHERE id = ? LIMIT 1");
         $query->execute([$id]);
 		return $query->fetch(PDO::FETCH_ASSOC);
     }
@@ -61,8 +63,69 @@ abstract class Model
         $sql .= $limit ? " LIMIT $limit" : '';
         $sql .= $offset ? " OFFSET $offset" : '';
         
-		$query = self::$conn->prepare($sql);
+		$query = self::getConnect()->prepare($sql);
         $query->execute($filter);
 		return $query;
+    }
+    
+    public static function create(array $data)
+    {
+        if (empty($data)) {
+            return;
+        }
+        
+        $sql = "INSERT INTO " . static::$table . ' (';
+
+        foreach ($data as $key => $value) {
+            $sql .= $key;
+            if ($value !== end($data)) {
+                $sql .= ', ';
+            }
+        }
+        
+        $sql .= ') VALUES (';
+        
+        foreach ($data as $key => $value) {
+            $sql .= ':' . $key;
+            if ($value !== end($data)) {
+                $sql .= ', ';
+            }
+        }
+        $sql .= ')';
+        
+		$query = self::getConnect()->prepare($sql);
+        
+        foreach ($data as $key => &$value) {
+            $query->bindParam($key, $value);
+        }
+        
+		return $query->execute();
+    }
+    
+    public static function update($id, array $data)
+    {
+        if (empty($data)) {
+            return;
+        }
+        
+        $sql = "UPDATE " . static::$table . ' SET ';
+
+        foreach ($data as $key => $value) {
+            $sql .= $key . ' = :' . $key;
+            if ($value !== end($data)) {
+                $sql .= ', ';
+            }
+        }
+        
+        $sql .= 'WHERE id = :id';
+        
+		$query = self::getConnect()->prepare($sql);
+        
+        $query->bindParam('id', $id);
+        foreach ($data as $key => &$value) {
+            $query->bindParam($key, $value);
+        }
+        
+		return $query->execute();
     }
 }

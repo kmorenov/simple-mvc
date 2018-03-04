@@ -11,6 +11,7 @@
     $router->add('registerForm', '/register', 'Auth:registerForm');
     $router->add('register', '/register-process', 'Auth:register' , 'POST');
     $router->add('logout', '/logout', 'Auth:logout');
+    $router->add('profile', '/profile', 'Profile:index');
     
     //News
     $router->add('news', '/news', 'Blog:news');

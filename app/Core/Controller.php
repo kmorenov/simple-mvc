@@ -6,11 +6,19 @@ use Core\View;
 
 abstract class Controller {
 
-    public function __construct() {
-        
+    public function post($name) {
+        return $this->getRequestData(INPUT_POST, $name);
     }
     
-    public function get($modelName)
+    public function get($name) {
+        return $this->getRequestData(INPUT_GET, $name);
+    }
+    
+    private function getRequestData($type, $name) {
+        return filter_input($type, $name);
+    }
+    
+    public function getModel($modelName)
     {
         $class = 'Model\\'.$modelName;
         return new $class;
@@ -42,5 +50,13 @@ abstract class Controller {
         http_response_code(404);
         echo "<h1>404 Page Not Found</h1>";
         die;
+    }
+    
+    public function addFlash($alias, $message)
+    {
+        //$flashBag = $_SESSION['flashBag'] ?? [];
+        $flashBag = isset($_SESSION['flashBag']) ? $_SESSION['flashBag'] : [];
+        $flashBag[$alias] = $message;
+        $_SESSION['flashBag'] = $flashBag;
     }
 }

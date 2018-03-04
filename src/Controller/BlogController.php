@@ -13,7 +13,7 @@ class BlogController extends Controller
 
     public function news()
     {
-        $model = $this->get('Article');
+        $model = $this->getModel('Article');
         
         $news = $model->findAll();
         
@@ -22,7 +22,7 @@ class BlogController extends Controller
 
     public function article($slug)
     {
-        $model = $this->get('Article');
+        $model = $this->getModel('Article');
         
         $article = $model->findOneBy(['slug' => $slug ]);
 

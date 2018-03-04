@@ -7,26 +7,37 @@ use Model\User;
 class Auth {
 
     private static $user;
-    
-    public function __construct() {
-        if (isset($_SESSION['user'])) {
-            self::$user = User::findOneBy(['username' => $_SESSION['user']]);
-        }
-    }
 
     public static function user()
     {
+        if (self::$user) {
+            return self::$user;
+        }
+        
+        if (isset($_SESSION['authorizedUser'])) {
+            self::$user = User::find($_SESSION['authorizedUser']);
+        }
+        
         return self::$user;
     }
     
-    public static function login($username)
+    public static function login($user)
     {
-        $_SESSION['user'] = $username;
+        $_SESSION['authorizedUser'] = (int)$user['id'];
     }
     
     public static function logout()
     {
-        unset($_SESSION['user']);
+        unset($_SESSION['authorizedUser']);
     }
 
+    public static function register($email, $password)
+    {
+        User::create([
+            'login' => $email,
+            'password' => \md5($password),
+            'confirmation_token' => \md5(uniqid())
+        ]);
+    }
+    
 }
