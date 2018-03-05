@@ -56,18 +56,11 @@ class View {
     
     public function hasFlash($alias)
     {
-        $flashBag = isset($_SESSION['flashBag']) ? $_SESSION['flashBag'] : [];
-        return isset($flashBag[$alias]) ? true : false;
+        return FlashBag::hasFlash($alias);
     }
     
     public function getFlash($alias)
     {
-        $flashBag = isset($_SESSION['flashBag']) ? $_SESSION['flashBag'] : [];
-        if (isset($flashBag[$alias])) {
-            $message = $flashBag[$alias];
-            unset($flashBag[$alias]);
-            $_SESSION['flashBag'] = $flashBag;
-            return $message;
-        }
+        return FlashBag::getFlash($alias);
     }
 }

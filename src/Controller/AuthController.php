@@ -4,6 +4,7 @@ namespace Controller;
 
 use Core\Controller;
 use Core\Auth;
+use Model\User;
 
 class AuthController extends Controller
 {
@@ -22,10 +23,17 @@ class AuthController extends Controller
             return $this->redirect('loginForm');
         }
 
+        if($user['confirmation_token']){
+            $this->addFlash('authError', 'Confirm your email!');
+            return $this->redirect('loginForm');
+        }
+
         if (\md5($this->post('password')) === $user['password']) {
             Auth::login($user);
             return $this->redirect('profile');
         }
+
+
         
         $this->addFlash('authError', 'The email or password is incorrect.');
         return $this->redirect('loginForm');
@@ -51,8 +59,10 @@ class AuthController extends Controller
             return $this->redirect('registerForm');
         }
 
-        Auth::register($this->post('email'), $this->post('password'));
-        
+        $createStatus = Auth::register($this->post('email'), $this->post('password'));
+        if($createStatus){
+            $this->addFlash('registerSuccess', $this->post('email'));
+        }
         return $this->redirect('confirmEmail');
     }
     
@@ -60,5 +70,23 @@ class AuthController extends Controller
     {
         Auth::logout();
         return $this->redirect('loginForm');
+    }
+
+
+    public function confirm($token){
+        $model = $this->getModel('User');
+        $user = $model->findOneByToken($token);
+        if($user){
+            $user['confirmation_token'] = null;
+            $model->update($user['id'], ['confirmation_token'=>null]);
+            Auth::login($user);
+            return $this->render('Auth/confirmSuccess', ['confirmSuccess'=>true], 'layout');
+        }
+
+        return $this->render('Auth/confirmSuccess', ['confirmSuccess'=>false], 'layout');
+    }
+
+    public function confirmEmail(){
+        return $this->render('Auth/confirmEmail', [], 'layout');
     }
 }

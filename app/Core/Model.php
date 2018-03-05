@@ -16,7 +16,8 @@ abstract class Model
         }
         
         $dns = sprintf("mysql:host=%s;dbname=%s;charset=%s", DB_HOSTNAME, DB_DATABASE, DB_CHARSET);
-        self::$conn = new PDO($dns, DB_USERNAME, DB_PASSWORD);
+        //self::$conn = new PDO($dns, DB_USERNAME, DB_PASSWORD);
+        self::$conn = new PDO('sqlite:../my_db.sqlite3');
         //self::$conn->exec("SET NAMES utf8");
         return self::$conn;   
     }
@@ -98,7 +99,6 @@ abstract class Model
         foreach ($data as $key => &$value) {
             $query->bindParam($key, $value);
         }
-        
 		return $query->execute();
     }
     
@@ -117,14 +117,15 @@ abstract class Model
             }
         }
         
-        $sql .= 'WHERE id = :id';
-        
+        $sql .= ' WHERE id = :id';
+
 		$query = self::getConnect()->prepare($sql);
         
         $query->bindParam('id', $id);
         foreach ($data as $key => &$value) {
             $query->bindParam($key, $value);
         }
+
         
 		return $query->execute();
     }

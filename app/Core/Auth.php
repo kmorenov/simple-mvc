@@ -33,11 +33,19 @@ class Auth {
 
     public static function register($email, $password)
     {
-        User::create([
+        $token = \md5(uniqid());
+        $createStatus = User::create([
             'login' => $email,
             'password' => \md5($password),
-            'confirmation_token' => \md5(uniqid())
+            'confirmation_token' => $token
         ]);
+
+        if($createStatus){
+            $confirmLink = $_SERVER['HTTP_HOST'].'/confirm/'.$token;
+            $massage = '<a href="'.$confirmLink.'">'.'Confirm User '.$email.'</a>';
+            mail($email, 'Confirm Email', $massage);
+        }
+        return $createStatus;
     }
     
 }

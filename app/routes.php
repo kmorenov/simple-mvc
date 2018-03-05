@@ -12,7 +12,14 @@
     $router->add('register', '/register-process', 'Auth:register' , 'POST');
     $router->add('logout', '/logout', 'Auth:logout');
     $router->add('profile', '/profile', 'Profile:index');
-    
+
+    $router->add('editSave', '/edit-save', 'Profile:editSave', 'POST');
+    $router->add('edit', '/edit', 'Profile:edit');
+
+
+    $router->add('confirmEmail', '/confirmEmail', 'Auth:confirmEmail', 'GET|POST');
+    $router->add('confirm', '/confirm/(token:any)', 'Auth:confirm', 'GET|POST');
+
     //News
     $router->add('news', '/news', 'Blog:news');
     $router->add('article', '/article/(slug:str)', 'Blog:article');
@@ -21,3 +28,4 @@
     // $router->add('about', '/about', 'AppController:aboutAction');
     // $router->add('contacts', '/contacts', 'AppController:contactsAction');
     // $router->add('user', '/user/(id:num)', 'AppController:userAction');
+

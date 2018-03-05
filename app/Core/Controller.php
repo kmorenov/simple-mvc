@@ -54,9 +54,6 @@ abstract class Controller {
     
     public function addFlash($alias, $message)
     {
-        //$flashBag = $_SESSION['flashBag'] ?? [];
-        $flashBag = isset($_SESSION['flashBag']) ? $_SESSION['flashBag'] : [];
-        $flashBag[$alias] = $message;
-        $_SESSION['flashBag'] = $flashBag;
+        FlashBag::addFlash($alias, $message);
     }
 }
