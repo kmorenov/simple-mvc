@@ -6,6 +6,6 @@ use Core\Model;
 
 class Article extends Model
 {
-    protected $table = 'news';
+    protected static $table = 'news';
 
 }

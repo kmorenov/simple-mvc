@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="/favicon.ico">
 
-    <title>Jumbotron Template for Bootstrap</title>
+    <title>Template for Bootstrap</title>
     <!-- Bootstrap core CSS -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
   </head>
 
   <body>
@@ -24,28 +25,25 @@
           </button>
           <a class="navbar-brand" href="#">Project name</a>
         </div>
-        <div id="navbar" class="navbar-collapse collapse">
-<!--          <form class="navbar-form navbar-right">
-            <div class="form-group">
-              <input type="text" placeholder="Email" class="form-control">
-            </div>
-            <div class="form-group">
-              <input type="password" placeholder="Password" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-success">Sign in</button>
-          </form>-->
+        <div id="navbar" class="navbar-collapse right">
+            <?php if ($this->getUser()) { ?>
+            <a class="navbar-brand navbar-right" href="<?= $this->path('logout')?>">logout</a>
+            <a class="navbar-brand navbar-right" href="<?= $this->path('profile')?>"><?= $this->getUser()['login'] ?></a>
+            <?php } else { ?>
+            <a class="navbar-brand navbar-right" href="<?= $this->path('loginForm')?>">Sign in</a>
+            <a class="navbar-brand navbar-right" href="<?= $this->path('registerForm')?>">Sign up</a>
+            <?php } ?>
         </div><!--/.navbar-collapse -->
       </div>
     </nav>
 
     <div class="container" style="margin-top: 70px;">
-
-      <?php include $content; ?>   
+ 
+      <?php include $content; ?>
 
       <hr>
-
       <footer>
-        <p>&copy; 2016 Company, Inc.</p>
+        <p>&copy; 2018 Company, Inc.</p>
       </footer>
     </div> <!-- /container -->
 

@@ -2,6 +2,8 @@
 
 namespace Core;
 
+use Core\Auth;
+
 class View {
 
     public function __construct() {
@@ -45,5 +47,20 @@ class View {
     {
         global $router;
         return $router->generate($name, $parameters, true);
+    }
+    
+    public function getUser()
+    {
+        return Auth::user();
+    }
+    
+    public function hasFlash($alias)
+    {
+        return FlashBag::hasFlash($alias);
+    }
+    
+    public function getFlash($alias)
+    {
+        return FlashBag::getFlash($alias);
     }
 }
