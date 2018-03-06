@@ -36,7 +36,7 @@ class Auth {
         $token = \md5(uniqid());
         $createStatus = User::create([
             'login' => $email,
-            'password' => \md5($password),
+            'password' => password_hash($password),
             'confirmation_token' => $token
         ]);
 

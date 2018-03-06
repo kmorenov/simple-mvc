@@ -2,7 +2,7 @@
 
 namespace Routing;
 
-class Helper {
+class Request {
 
     public static function _GET($key) {
         return isset($_GET[$key]) ? $_GET[$key] : null;

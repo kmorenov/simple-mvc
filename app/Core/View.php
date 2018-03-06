@@ -30,12 +30,12 @@ class View {
         return APP_DIR . '/../src/views/'.$template.'.php';
     }
     
-    public static function renderController($action, $data = [])
-    {
-        list($class, $action) = explode(':', $action, 2);
-        $class = 'Controller\\' . $class . 'Controller';
-        call_user_func_array(array(new $class(), $action), $data);
-    }
+//    public static function renderController($action, $data = [])
+//    {
+//        list($class, $action) = explode(':', $action, 2);
+//        $class = 'Controller\\' . $class . 'Controller';
+//        call_user_func_array(array(new $class(), $action), $data);
+//    }
     
     public function path($name, array $parameters = [])
     {

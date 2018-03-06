@@ -28,7 +28,7 @@ class AuthController extends Controller
             return $this->redirect('loginForm');
         }
 
-        if (\md5($this->post('password')) === $user['password']) {
+        if (\password_verify($this->post('password'), $user['password'])) {
             Auth::login($user);
             return $this->redirect('profile');
         }
