@@ -16,9 +16,20 @@ abstract class Model
         }
         
         $dns = sprintf("mysql:host=%s;dbname=%s;charset=%s", DB_HOSTNAME, DB_DATABASE, DB_CHARSET);
-        //self::$conn = new PDO($dns, DB_USERNAME, DB_PASSWORD);
-        self::$conn = new PDO('sqlite:../my_db.sqlite3');
-        //self::$conn->exec("SET NAMES utf8");
+
+        switch (DB_DRIVER) {
+            case 'sqlite':
+                self::$conn = new PDO('sqlite:../my_db.sqlite3');
+                break;
+            case 'mysql':
+                self::$conn = new PDO($dns, DB_USERNAME, DB_PASSWORD);
+                break;
+            default:
+                self::$conn = new PDO($dns, DB_USERNAME, DB_PASSWORD);
+                break;
+        }
+
+        self::$conn->exec("SET NAMES utf8");
         return self::$conn;   
     }
     
@@ -53,10 +64,11 @@ abstract class Model
         
         $sql .= empty($filter) ? '' : ' WHERE';
         
+        $lastElementKey = @array_pop(array_keys($filter));
         foreach ($filter as $key => $value) {
             
             $sql .= ' ' . $key . ' = :'. $key;
-                if ($value !== end($filter)) {
+                if ($key !== $lastElementKey) {
                     $sql .= ' AND ';
                 }
         }
@@ -86,19 +98,21 @@ abstract class Model
         
         $sql .= ') VALUES (';
         
+        $lastElementKey = @array_pop(array_keys($data));
         foreach ($data as $key => $value) {
             $sql .= ':' . $key;
-            if ($value !== end($data)) {
+            if ($key !== $lastElementKey) {
                 $sql .= ', ';
             }
         }
         $sql .= ')';
-        
+
 		$query = self::getConnect()->prepare($sql);
         
         foreach ($data as $key => &$value) {
             $query->bindParam($key, $value);
         }
+        var_dump($query->execute()); die;
 		return $query->execute();
     }
     
@@ -110,9 +124,10 @@ abstract class Model
         
         $sql = "UPDATE " . static::$table . ' SET ';
 
+        $lastElementKey = @array_pop(array_keys($data));
         foreach ($data as $key => $value) {
             $sql .= $key . ' = :' . $key;
-            if ($value !== end($data)) {
+            if ($key !== $lastElementKey) {
                 $sql .= ', ';
             }
         }
